@@ -10,13 +10,13 @@ import java.util.List;
  interface Observer {
     public void update(String message);
 }
- class MyTopic implements Subject {
+ class MySub implements Subject {
 	 
     private List<Observer> observers;
     private String message;
    
 
-    public MyTopic(){
+    public MySub(){
         observers=new ArrayList<>();
     }
     @Override
@@ -43,7 +43,6 @@ import java.util.List;
     	notifyObservers();
     }
      
-    //method to post message to the topic
     public void postMessage(String msg){
         
         this.message=msg;
@@ -55,10 +54,11 @@ import java.util.List;
  class Subscriber implements Observer {
     
     private String message;
-    private Subject topic;
+    private Subject sub;
      
-    public Subscriber(Subject topic){
-        this.topic=topic;
+    public Subscriber(Subject sub){
+        this.sub=sub;
+        sub.register(this);
     }
     @Override
     public void update(String message) {
@@ -75,10 +75,11 @@ import java.util.List;
  class Subscriber1 implements Observer {
 	    
 	    private String message;
-	    private Subject topic;
+	    private Subject sub;
 	     
-	    public Subscriber1(Subject topic){
-	        this.topic=topic;
+	    public Subscriber1(Subject sub){
+	        this.sub=sub;
+	        sub.register(this);
 	    }
 	    @Override
 	    public void update(String message) {
@@ -94,22 +95,14 @@ import java.util.List;
 	}
 public class ObserverExemple {
 	public static void main(String[] args) {
-        //create subject
-        MyTopic topic = new MyTopic();
-         
-        //create observers
-        Observer obj1 = new Subscriber(topic);
-        Observer obj2 = new Subscriber1(topic);
-         
-        //register observers to the subject
-       topic.register(obj1);
-       topic.register(obj2);
-         
         
-         
-        //now send message to subject
-        topic.postMessage("New Message1");
-        topic.postMessage("New Message2");
-        topic.postMessage("New Message3");
+		MySub sub = new MySub();
+
+        Subscriber obj1 = new Subscriber(sub);
+        Subscriber1 obj2 = new Subscriber1(sub);
+
+        sub.postMessage("New Message1");
+        sub.postMessage("New Message2");
+        sub.postMessage("New Message3");
     }
 }
